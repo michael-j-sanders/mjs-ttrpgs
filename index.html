@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fates — Character Sheet</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #0a0a0a;
+      --paper: #fafafa;
+      --line: #c8c8c8;
+      --accent: #1a1a1a;
+      --stress-on: #1a1a1a;
+      --stress-idle-bg: #dedede;
+      --stress-idle-border: #b8b8b8;
+      --stress-idle-num: #757575;
+      --radius: 2px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "DM Sans", system-ui, sans-serif;
+      font-size: 14px;
+      color: var(--ink);
+      background: var(--paper);
+      line-height: 1.4;
+    }
+
+    .page {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 1rem 1rem 2.5rem;
+    }
+
+    .page-title-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 0.75rem 1rem;
+      margin-bottom: 0.75rem;
+    }
+
+    h1 {
+      font-size: 1.12rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin: 0;
+      line-height: 1.2;
+    }
+
+    .sheet-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .sheet-actions .btn {
+      font: inherit;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 0.45rem 0.75rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
+      color: var(--ink);
+      cursor: pointer;
+    }
+
+    .sheet-actions .btn:hover {
+      background: #f0f0f0;
+      border-color: #aaa;
+    }
+
+    .sheet-actions .btn:focus-visible {
+      outline: 2px solid #2563eb;
+      outline-offset: 2px;
+    }
+
+    .sheet-actions .btn-hint {
+      font-size: 0.7rem;
+      font-weight: 400;
+      letter-spacing: 0;
+      text-transform: none;
+      color: #666;
+      margin: 0;
+      line-height: 1.35;
+      width: 100%;
+      flex-basis: 100%;
+    }
+
+    .sheet-header {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      grid-template-areas: "fields util";
+      gap: 0.85rem 1.25rem;
+      align-items: start;
+      margin-bottom: 0.85rem;
+    }
+
+    .field-grid {
+      grid-area: fields;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .utility-stack {
+      grid-area: util;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      min-width: 11.75rem;
+    }
+
+    @media (max-width: 640px) {
+      .sheet-header {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+          "util"
+          "fields";
+      }
+
+      .utility-stack {
+        justify-self: end;
+        flex-direction: row;
+        gap: 0.75rem;
+      }
+
+      .utility-box {
+        min-width: 6.5rem;
+      }
+    }
+
+    .field {
+      display: grid;
+      grid-template-columns: 6.75rem 1fr;
+      gap: 0.35rem 0.5rem;
+      align-items: center;
+    }
+
+    @media (max-width: 520px) {
+      .field {
+        grid-template-columns: 1fr;
+        gap: 0.2rem;
+      }
+    }
+
+    .field label {
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #444;
+    }
+
+    .field input,
+    .field textarea,
+    .field select {
+      width: 100%;
+      font: inherit;
+      padding: 0.32rem 0.45rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
+    }
+
+    .field textarea {
+      min-height: 2.15rem;
+      resize: vertical;
+    }
+
+    .utility-box {
+      border: 1px solid var(--line);
+      background: #fff;
+      padding: 0.4rem 0.55rem;
+      border-radius: var(--radius);
+    }
+
+    .utility-box label {
+      display: block;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #555;
+      margin-bottom: 0.35rem;
+    }
+
+    .utility-box input {
+      width: 100%;
+      font: inherit;
+      font-variant-numeric: tabular-nums;
+      border: none;
+      padding: 0.15rem 0;
+      background: transparent;
+    }
+
+    .utility-box:focus-within {
+      outline: 2px solid #2563eb;
+      outline-offset: 1px;
+    }
+
+    .utility-box input:focus {
+      outline: none;
+    }
+
+    .section {
+      margin-bottom: 0.85rem;
+    }
+
+    .section-title {
+      position: relative;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.38rem 0.6rem;
+      margin: 0 0 0;
+      clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 100%, 0 100%);
+    }
+
+    .section-body {
+      border: 1px solid var(--line);
+      border-top: none;
+      background: #fff;
+      padding: 0.5rem 0.55rem;
+      border-radius: 0 0 var(--radius) var(--radius);
+    }
+
+    .section-attributes .section-body {
+      display: block;
+    }
+
+    .section-attributes .attrs-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.28rem 0.85rem;
+      width: 100%;
+    }
+
+    .section-attributes .attrs-column {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.26rem;
+      min-width: 0;
+    }
+
+    @media (max-width: 520px) {
+      .section-attributes .attrs-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .section-attributes .attrs-column .attr-row {
+        width: auto;
+        max-width: 11.5rem;
+      }
+    }
+
+    .section-attributes .attrs-column .attr-row {
+      display: grid;
+      grid-template-columns: minmax(5.75rem, 8.75rem) 2.85rem;
+      align-items: center;
+      gap: 0.36rem;
+      width: fit-content;
+      max-width: 100%;
+    }
+
+    .section-attributes .attrs-column .attr-row label {
+      font-size: 0.84rem;
+      text-align: right;
+      min-width: 0;
+    }
+
+    .section-attributes .attrs-column .attr-row select {
+      font: inherit;
+      font-size: 0.88rem;
+      padding: 0.24rem 0.26rem;
+      width: 100%;
+      min-width: 0;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
+    }
+
+    .stress-block {
+      margin-bottom: 1rem;
+    }
+
+    .stress-block:last-child {
+      margin-bottom: 0;
+    }
+
+    .stress-block h3 {
+      margin: 0 0 0.35rem;
+      font-size: 0.74rem;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .stress-boxes {
+      display: flex;
+      gap: 0.35rem;
+      flex-wrap: wrap;
+    }
+
+    .stress-slot {
+      position: relative;
+    }
+
+    .stress-slot input {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .stress-slot label {
+      position: relative;
+      display: block;
+      min-width: 2.95rem;
+      min-height: 3.85rem;
+      padding: 0;
+      border: 2px solid var(--stress-idle-border);
+      border-radius: var(--radius);
+      cursor: pointer;
+      user-select: none;
+      background: var(--stress-idle-bg);
+      color: var(--stress-idle-num);
+      transition: background 0.12s ease, color 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
+    }
+
+    .stress-slot-num {
+      position: absolute;
+      top: 0.32rem;
+      left: 0.38rem;
+      font-size: 0.65rem;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    .stress-slot input:checked + label .stress-slot-num {
+      color: var(--ink);
+    }
+
+    .stress-slot input:focus-visible + label {
+      outline: 2px solid #2563eb;
+      outline-offset: 2px;
+    }
+
+    .stress-slot input:checked + label {
+      background: #fff;
+      border-color: var(--stress-on);
+      color: var(--ink);
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.06);
+    }
+
+    .stress-slot label:hover {
+      background: #d0d0d0;
+      border-color: #a8a8a8;
+    }
+
+    .stress-slot input:checked + label:hover {
+      background: #fafafa;
+      border-color: #000;
+    }
+
+    .stress-consequences-body {
+      display: grid;
+      grid-template-columns: max-content minmax(0, 1fr);
+      gap: 0.65rem 1.1rem;
+      align-items: start;
+    }
+
+    .stress-column {
+      min-width: 0;
+    }
+
+    .stress-consequences-body .stress-block {
+      margin-bottom: 0.6rem;
+    }
+
+    .stress-consequences-body .stress-block:last-child {
+      margin-bottom: 0;
+    }
+
+    @media (max-width: 800px) {
+      .stress-consequences-body {
+        grid-template-columns: 1fr;
+      }
+
+      .consequences-column {
+        border-left: none;
+        padding-left: 0;
+        border-top: 1px solid var(--line);
+        padding-top: 1.25rem;
+      }
+    }
+
+    .consequences-column {
+      border-left: 1px solid var(--line);
+      padding-left: 0.9rem;
+      min-width: 0;
+    }
+
+    .consequences-column h3 {
+      margin: 0 0 0.35rem;
+      font-size: 0.74rem;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .consequence-row {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 0.4rem 0.5rem;
+      align-items: center;
+      margin-bottom: 0.45rem;
+    }
+
+    .consequence-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .consequence-tag {
+      display: flex;
+      align-items: baseline;
+      gap: 0.35rem;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .consequence-shift {
+      font-weight: 700;
+      font-size: 0.95rem;
+      font-variant-numeric: tabular-nums;
+      min-width: 1rem;
+    }
+
+    .consequence-name {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #555;
+    }
+
+    .consequence-row input {
+      width: 100%;
+      font: inherit;
+      padding: 0.28rem 0.4rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
+    }
+
+    .section-body--notes {
+      padding: 0;
+    }
+
+    .sheet-notes {
+      display: block;
+      width: 100%;
+      margin: 0;
+      padding: 0.85rem 0.9rem;
+      border: none;
+      font: inherit;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      resize: vertical;
+      background: #fff;
+      border-radius: 0 0 var(--radius) var(--radius);
+      min-height: 12rem;
+    }
+
+    .sheet-notes--stunts {
+      min-height: 16rem;
+    }
+
+    .section-body--notes:focus-within {
+      outline: 2px solid #2563eb;
+      outline-offset: -2px;
+    }
+
+    .sheet-notes:focus {
+      outline: none;
+    }
+
+    .sheet-print-page1,
+    .sheet-print-page2 {
+      display: contents;
+    }
+
+    @media print {
+      @page {
+        margin: 18mm 17mm;
+        size: auto;
+      }
+
+      .sheet-print-page1 {
+        display: flex !important;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: stretch;
+        gap: 0.14in;
+        min-height: calc(100vh - 36mm);
+        page-break-after: always;
+        break-after: page;
+      }
+
+      .sheet-print-page1 .section {
+        margin-bottom: 0 !important;
+        page-break-inside: auto;
+        break-inside: auto;
+      }
+
+      .sheet-print-page2 .section.section--spacious {
+        margin-bottom: 0 !important;
+      }
+
+      .sheet-print-page2 {
+        display: flex !important;
+        flex-direction: column;
+        gap: 0.14in;
+        min-height: calc(100vh - 36mm);
+      }
+
+      .sheet-print-page2 > .section--spacious:first-of-type .section-body--notes {
+        flex: 1 1 auto;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+      }
+
+      .sheet-print-page2 > .section--spacious:first-of-type .sheet-notes {
+        flex: 1 1 auto;
+        min-height: 0 !important;
+        height: 100%;
+      }
+
+      .sheet-print-page2 > .section--spacious:last-of-type {
+        flex: 1 1 0;
+        display: flex !important;
+        flex-direction: column;
+        min-height: 0;
+        margin-bottom: 0 !important;
+      }
+
+      .sheet-print-page2 > .section--spacious:last-of-type .section-body--notes {
+        flex: 1 1 auto;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+      }
+
+      .sheet-print-page2 > .section--spacious:last-of-type .sheet-notes--stunts {
+        flex: 1 1 auto;
+        min-height: 0 !important;
+        height: 100%;
+      }
+
+
+      .no-print {
+        display: none !important;
+      }
+
+      html,
+      body {
+        background: #fff !important;
+        color: #000;
+        min-height: 100vh;
+        font-size: 11pt !important;
+        line-height: 1.35 !important;
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+      }
+
+      .page-title-row {
+        margin-bottom: 0.35rem !important;
+      }
+
+      h1 {
+        font-size: 12.5pt !important;
+      }
+
+      .sheet-header {
+        display: grid !important;
+        grid-template-columns: 1fr auto !important;
+        grid-template-areas: "fields util" !important;
+        gap: 0.42rem 0.75rem !important;
+        margin-bottom: 0.4rem !important;
+        width: 100% !important;
+      }
+
+      .field-grid {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 0.18rem !important;
+        grid-area: fields;
+      }
+
+      .field {
+        grid-template-columns: 5.25rem 1fr !important;
+        gap: 0.15rem 0.35rem !important;
+      }
+
+      .field textarea {
+        min-height: 1.65rem !important;
+      }
+
+      .field input,
+      .field textarea {
+        padding: 0.18rem 0.35rem !important;
+        font-size: 9.5pt !important;
+      }
+
+      .field label {
+        font-size: 7.25pt !important;
+      }
+
+      .utility-stack {
+        min-width: 7.5rem !important;
+        gap: 0.3rem !important;
+      }
+
+      .utility-box {
+        padding: 0.26rem 0.42rem !important;
+      }
+
+      .utility-box label {
+        font-size: 6.75pt !important;
+        margin-bottom: 0.12rem !important;
+      }
+
+      .section {
+        margin-bottom: 0.28rem !important;
+        page-break-inside: avoid;
+        break-inside: avoid;
+      }
+
+      .section-title {
+        padding: 0.28rem 0.5rem !important;
+        font-size: 7.25pt !important;
+        page-break-after: avoid;
+        break-after: avoid;
+      }
+
+      .section-body {
+        padding: 0.34rem 0.45rem !important;
+      }
+
+      .section-attributes .section-body {
+        display: block !important;
+      }
+
+      .section-attributes .attrs-grid {
+        width: 100% !important;
+        max-width: 100% !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 0.22in 0.42rem !important;
+      }
+
+      .section-attributes .attrs-column {
+        gap: 0.14in !important;
+      }
+
+      .section-attributes .attrs-column .attr-row {
+        display: grid !important;
+        grid-template-columns: minmax(5.5rem, 9.25rem) 2.85rem !important;
+        gap: 0.14rem 0.28rem !important;
+        width: fit-content !important;
+        max-width: 100% !important;
+      }
+
+      .section-attributes .attrs-column .attr-row label {
+        font-size: 9pt !important;
+        text-align: right !important;
+      }
+
+      .section-attributes .attrs-column .attr-row select {
+        font-size: 9pt !important;
+        padding: 0.12rem 0.14rem !important;
+        width: 100% !important;
+        min-width: 0 !important;
+      }
+
+      .stress-consequences-body {
+        grid-template-columns: max-content 1fr !important;
+        gap: 0.4rem 0.7rem !important;
+      }
+
+      .stress-block h3,
+      .consequences-column h3 {
+        font-size: 8.25pt !important;
+        margin-bottom: 0.22rem !important;
+      }
+
+      .stress-consequences-body .stress-block {
+        margin-bottom: 0.38rem !important;
+      }
+
+      .stress-slot label {
+        min-width: 2.65rem !important;
+        min-height: 3.35rem !important;
+      }
+
+      .stress-slot-num {
+        font-size: 6.25pt !important;
+        top: 0.2rem !important;
+        left: 0.24rem !important;
+      }
+
+      .stress-boxes {
+        gap: 0.24rem !important;
+      }
+
+      .consequences-column {
+        border-left: 1px solid #999 !important;
+        padding-left: 0.6rem !important;
+        border-top: none !important;
+        padding-top: 0 !important;
+      }
+
+      .consequence-row {
+        margin-bottom: 0.28rem !important;
+        gap: 0.28rem 0.38rem !important;
+      }
+
+      .consequence-row input {
+        padding: 0.12rem 0.3rem !important;
+        font-size: 9.5pt !important;
+      }
+
+      .consequence-shift {
+        font-size: 8.75pt !important;
+      }
+
+      .consequence-name {
+        font-size: 7pt !important;
+      }
+
+      .page {
+        width: 100% !important;
+        max-width: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      .section-title,
+      .stress-slot label,
+      .stress-slot input:checked + label {
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+      }
+
+      .section.section--spacious {
+        page-break-inside: auto;
+        break-inside: auto;
+      }
+
+      .field input,
+      .field textarea,
+      .attr-row select,
+      .consequence-row input,
+      .utility-box input,
+      .sheet-notes {
+        border-color: #888 !important;
+        background: #fff !important;
+        min-height: 0;
+      }
+
+      .attr-row select {
+        appearance: none;
+        background-image: none !important;
+      }
+
+      textarea {
+        overflow: visible !important;
+      }
+
+      .sheet-print-page1 > .page-title-row {
+        margin-bottom: 0 !important;
+      }
+
+      .sheet-print-page1 > .sheet-header {
+        margin-bottom: 0 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="sheet-print-page1">
+      <div class="page-title-row">
+        <h1>Fates — Character Sheet</h1>
+        <div class="sheet-actions no-print">
+          <button type="button" class="btn" id="btn-print">Print</button>
+          <button type="button" class="btn" id="btn-pdf">Save as PDF</button>
+          <p class="btn-hint">PDF: in the print dialog, set the destination to Save as PDF.</p>
+        </div>
+      </div>
+
+      <header class="sheet-header">
+        <div class="field-grid">
+        <div class="field"><label for="name">Name</label><input id="name" type="text" autocomplete="off" /></div>
+        <div class="field"><label for="race">Race</label><input id="race" type="text" autocomplete="off" /></div>
+        <div class="field"><label for="concept">Concept</label><textarea id="concept" rows="2"></textarea></div>
+        <div class="field"><label for="trouble">Trouble</label><textarea id="trouble" rows="2"></textarea></div>
+        <div class="field"><label for="aspect1">Aspect 1</label><input id="aspect1" type="text" /></div>
+        <div class="field"><label for="aspect2">Aspect 2</label><input id="aspect2" type="text" /></div>
+        <div class="field"><label for="aspect3">Aspect 3</label><input id="aspect3" type="text" /></div>
+        <div class="field"><label for="tier">Tier</label><input id="tier" type="text" /></div>
+      </div>
+      <div class="utility-stack">
+        <div class="utility-box">
+          <label for="refresh">Refresh</label>
+          <input id="refresh" type="text" inputmode="numeric" maxlength="8" />
+        </div>
+        <div class="utility-box">
+          <label for="xp">Possibility points</label>
+          <input id="xp" type="text" maxlength="6" spellcheck="false" />
+        </div>
+      </div>
+    </header>
+
+    <section class="section section-attributes" aria-labelledby="attrs-heading">
+      <h2 id="attrs-heading" class="section-title">Attributes</h2>
+      <div class="section-body">
+        <div class="attrs-grid" id="attributes-root"></div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="stress-heading">
+      <h2 id="stress-heading" class="section-title">Stress &amp; consequences</h2>
+      <div class="section-body stress-consequences-body">
+        <div class="stress-column">
+          <div class="stress-block">
+            <h3>Physical stress (Physique)</h3>
+            <div class="stress-boxes" id="physical-stress"></div>
+          </div>
+          <div class="stress-block">
+            <h3>Mental stress (Will)</h3>
+            <div class="stress-boxes" id="mental-stress"></div>
+          </div>
+        </div>
+        <aside class="consequences-column" aria-labelledby="consequences-heading">
+          <h3 id="consequences-heading">Consequences</h3>
+          <div class="consequence-row">
+            <label class="consequence-tag" for="consequence-mild">
+              <span class="consequence-shift">2</span>
+              <span class="consequence-name">Mild</span>
+            </label>
+            <input id="consequence-mild" type="text" autocomplete="off" />
+          </div>
+          <div class="consequence-row">
+            <label class="consequence-tag" for="consequence-moderate">
+              <span class="consequence-shift">4</span>
+              <span class="consequence-name">Moderate</span>
+            </label>
+            <input id="consequence-moderate" type="text" autocomplete="off" />
+          </div>
+          <div class="consequence-row">
+            <label class="consequence-tag" for="consequence-severe">
+              <span class="consequence-shift">6</span>
+              <span class="consequence-name">Severe</span>
+            </label>
+            <input id="consequence-severe" type="text" autocomplete="off" />
+          </div>
+        </aside>
+      </div>
+    </section>
+    </div>
+
+    <div class="sheet-print-page2 extras-stunts-group">
+      <section class="section section--spacious" aria-labelledby="extras-heading">
+        <h2 id="extras-heading" class="section-title">Extras</h2>
+        <div class="section-body section-body--notes">
+          <textarea
+            id="extras"
+            class="sheet-notes"
+            rows="14"
+            aria-labelledby="extras-heading"
+            placeholder="Extras, gear, notes…"
+          ></textarea>
+        </div>
+      </section>
+
+      <section class="section section--spacious" aria-labelledby="stunts-heading">
+        <h2 id="stunts-heading" class="section-title">Stunts</h2>
+        <div class="section-body section-body--notes">
+          <textarea
+            id="stunts"
+            class="sheet-notes sheet-notes--stunts"
+            rows="18"
+            aria-labelledby="stunts-heading"
+            placeholder="Stunt descriptions…"
+          ></textarea>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const ATTRIBUTES = [
+      "Athletics",
+      "Burglary",
+      "Contacts",
+      "Crafts",
+      "Deceive",
+      "Drive",
+      "Empathy",
+      "Fight",
+      "Investigate",
+      "Lore",
+      "Notice",
+      "Physique",
+      "Provoke",
+      "Rapport",
+      "Resources",
+      "Shoot",
+      "Stealth",
+      "Will",
+    ];
+
+    const STORAGE_KEY = "fates-character-sheet-v1";
+
+    function buildAttributes() {
+      const root = document.getElementById("attributes-root");
+      const options = Array.from({ length: 11 }, (_, i) => i)
+        .map((n) => `<option value="${n}">${n}</option>`)
+        .join("");
+
+      const rowHtml = (name) => {
+        const id = `attr-${name.toLowerCase()}`;
+        return `
+          <div class="attr-row">
+            <label for="${id}">${name}</label>
+            <select id="${id}" data-field="attr:${name}">${options}</select>
+          </div>
+        `;
+      };
+
+      const left = ATTRIBUTES.filter((_, i) => i % 2 === 0).map(rowHtml).join("");
+      const right = ATTRIBUTES.filter((_, i) => i % 2 === 1).map(rowHtml).join("");
+
+      root.innerHTML = `
+        <div class="attrs-column">${left}</div>
+        <div class="attrs-column">${right}</div>
+      `;
+    }
+
+    function buildStress(containerId, prefix, stressTrackName) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = [1, 2, 3, 4]
+        .map((n) => {
+          const id = `${prefix}-stress-${n}`;
+          const ariaLabel = `${stressTrackName} box ${n}`;
+          return `
+            <div class="stress-slot">
+              <input type="checkbox" id="${id}" data-field="${prefix}:${n}" aria-label="${ariaLabel}" />
+              <label for="${id}">
+                <span class="stress-slot-num">${n}</span>
+              </label>
+            </div>
+          `;
+        })
+        .join("");
+    }
+
+    function getFormFields() {
+      const textIds = [
+        "name",
+        "race",
+        "concept",
+        "trouble",
+        "aspect1",
+        "aspect2",
+        "aspect3",
+        "tier",
+        "refresh",
+        "xp",
+        "consequence-mild",
+        "consequence-moderate",
+        "consequence-severe",
+        "extras",
+        "stunts",
+      ];
+      const fields = {};
+      textIds.forEach((id) => {
+        const el = document.getElementById(id);
+        if (el) fields[id] = el;
+      });
+      document.querySelectorAll("[data-field^='attr:']").forEach((el) => {
+        fields[el.dataset.field] = el;
+      });
+      document.querySelectorAll("[data-field^='physical:'], [data-field^='mental:']").forEach((el) => {
+        fields[el.dataset.field] = el;
+      });
+      return fields;
+    }
+
+    function save() {
+      const data = {};
+      Object.entries(getFormFields()).forEach(([key, el]) => {
+        if (el.type === "checkbox") data[key] = el.checked;
+        else if (el.tagName === "SELECT") data[key] = el.value;
+        else data[key] = el.value;
+      });
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      } catch (_) {
+        /* ignore */
+      }
+    }
+
+    function load() {
+      let raw;
+      try {
+        raw = localStorage.getItem(STORAGE_KEY);
+      } catch (_) {
+        return;
+      }
+      if (!raw) return;
+      let data;
+      try {
+        data = JSON.parse(raw);
+      } catch (_) {
+        return;
+      }
+      Object.entries(data).forEach(([key, val]) => {
+        const el =
+          document.querySelector(`[data-field="${key}"]`) ||
+          document.getElementById(key);
+        if (!el) return;
+        if (el.type === "checkbox") el.checked = Boolean(val);
+        else if (el.tagName === "SELECT") el.value = String(val);
+        else el.value = val == null ? "" : String(val);
+      });
+    }
+
+    function bindAutosave() {
+      const debounced = (() => {
+        let t;
+        return () => {
+          clearTimeout(t);
+          t = setTimeout(save, 200);
+        };
+      })();
+
+      document.querySelector(".page").addEventListener("input", debounced);
+      document.querySelector(".page").addEventListener("change", debounced);
+    }
+
+    function openPrintDialog() {
+      window.print();
+    }
+
+    document.getElementById("btn-print").addEventListener("click", openPrintDialog);
+    document.getElementById("btn-pdf").addEventListener("click", openPrintDialog);
+
+    buildAttributes();
+    buildStress("physical-stress", "physical", "Physical stress");
+    buildStress("mental-stress", "mental", "Mental stress");
+    load();
+    bindAutosave();
+  </script>
+</body>
+</html>
