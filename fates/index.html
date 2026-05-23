@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fates — Character Sheet</title>
+  <meta name="description" content="Interactive character sheet for the Fates tabletop RPG. Create, save, and manage multiple characters." />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════
+       Character Picker Modal
+       ═══════════════════════════════════ -->
+  <div class="modal-overlay hidden" id="char-modal">
+    <div class="modal" role="dialog" aria-labelledby="modal-title" aria-modal="true">
+      <div class="modal-header">
+        <h2 id="modal-title">Fates Characters</h2>
+        <p>Load an existing character or start fresh.</p>
+      </div>
+      <div class="modal-body">
+        <ul class="char-list" id="char-list"></ul>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary btn-full" id="btn-new-char">
+          + New Character
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════
+       Main Sheet
+       ═══════════════════════════════════ -->
+  <div class="page">
+    <div class="sheet-print-page1">
+
+      <!-- Title Bar -->
+      <div class="title-bar no-print">
+        <h1>Fates<span id="active-char-name"></span></h1>
+        <div class="title-actions">
+          <span class="save-indicator" id="save-indicator">Saved</span>
+          <div class="color-picker-wrapper" title="Accent color">
+            <input type="color" id="accent-picker" value="#c9a84c" />
+          </div>
+          <button class="btn btn-secondary" id="btn-manage">Characters</button>
+          <button class="btn btn-secondary" id="btn-save">Save</button>
+          <button class="btn btn-secondary" id="btn-print">Print</button>
+        </div>
+      </div>
+
+      <!-- Identity Card -->
+      <div class="card">
+        <div class="card-header"><h2>Identity</h2></div>
+        <div class="card-body">
+          <div class="sheet-header">
+            <div class="field-grid">
+              <div class="field"><label for="name">Name</label><input id="name" type="text" autocomplete="off" /></div>
+              <div class="field"><label for="race">Race</label><input id="race" type="text" autocomplete="off" /></div>
+              <div class="field"><label for="concept">Concept</label><textarea id="concept" rows="2"></textarea></div>
+              <div class="field"><label for="trouble">Trouble</label><textarea id="trouble" rows="2"></textarea></div>
+              <div class="field"><label for="aspect1">Aspect 1</label><input id="aspect1" type="text" /></div>
+              <div class="field"><label for="aspect2">Aspect 2</label><input id="aspect2" type="text" /></div>
+              <div class="field"><label for="aspect3">Aspect 3</label><input id="aspect3" type="text" /></div>
+              <div class="field"><label for="tier">Tier</label><input id="tier" type="text" /></div>
+            </div>
+            <div class="utility-stack">
+              <div class="utility-box">
+                <label for="refresh">Refresh</label>
+                <input id="refresh" type="text" inputmode="numeric" maxlength="8" />
+              </div>
+              <div class="utility-box">
+                <label for="xp">Possibility Points</label>
+                <input id="xp" type="text" maxlength="6" spellcheck="false" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Attributes Card -->
+      <div class="card">
+        <div class="card-header"><h2>Attributes</h2></div>
+        <div class="card-body">
+          <div class="attrs-grid" id="attributes-root"></div>
+        </div>
+      </div>
+
+      <!-- Stress & Consequences Card -->
+      <div class="card">
+        <div class="card-header"><h2>Stress &amp; Consequences</h2></div>
+        <div class="card-body">
+          <div class="stress-consequences-body">
+            <div class="stress-column">
+              <div class="stress-block">
+                <h3>Physical Stress (Physique)</h3>
+                <div class="stress-boxes" id="physical-stress"></div>
+              </div>
+              <div class="stress-block">
+                <h3>Mental Stress (Will)</h3>
+                <div class="stress-boxes" id="mental-stress"></div>
+              </div>
+            </div>
+            <aside class="consequences-column">
+              <h3>Consequences</h3>
+              <div class="consequence-row">
+                <label class="consequence-tag" for="consequence-mild">
+                  <span class="consequence-shift">2</span>
+                  <span class="consequence-name">Mild</span>
+                </label>
+                <input id="consequence-mild" type="text" autocomplete="off" />
+              </div>
+              <div class="consequence-row">
+                <label class="consequence-tag" for="consequence-moderate">
+                  <span class="consequence-shift">4</span>
+                  <span class="consequence-name">Moderate</span>
+                </label>
+                <input id="consequence-moderate" type="text" autocomplete="off" />
+              </div>
+              <div class="consequence-row">
+                <label class="consequence-tag" for="consequence-severe">
+                  <span class="consequence-shift">6</span>
+                  <span class="consequence-name">Severe</span>
+                </label>
+                <input id="consequence-severe" type="text" autocomplete="off" />
+              </div>
+            </aside>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /sheet-print-page1 -->
+
+    <div class="sheet-print-page2">
+      <!-- Extras Card -->
+      <div class="card">
+        <div class="card-header"><h2>Extras</h2></div>
+        <div class="card-body card-body--notes">
+          <textarea id="extras" class="sheet-notes" rows="12"
+                    placeholder="Extras, gear, notes…"></textarea>
+        </div>
+      </div>
+
+      <!-- Stunts Card -->
+      <div class="card">
+        <div class="card-header"><h2>Stunts</h2></div>
+        <div class="card-body card-body--notes">
+          <textarea id="stunts" class="sheet-notes sheet-notes--stunts" rows="16"
+                    placeholder="Stunt descriptions…"></textarea>
+        </div>
+      </div>
+    </div><!-- /sheet-print-page2 -->
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
