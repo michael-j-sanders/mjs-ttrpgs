@@ -22,9 +22,15 @@
         <ul class="char-list" id="char-list"></ul>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-primary btn-full" id="btn-new-char">
-          + New Character
-        </button>
+        <div class="modal-footer-buttons">
+          <button class="btn btn-primary" id="btn-new-char">
+            + New Character
+          </button>
+          <button class="btn btn-secondary" id="btn-import-char">
+            Import
+          </button>
+          <input type="file" id="char-import-input" accept=".json" style="display: none;" />
+        </div>
       </div>
     </div>
   </div>

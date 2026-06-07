@@ -253,6 +253,51 @@
     renderCharList();
   }
 
+  function exportChar(id) {
+    const chars = getAllChars();
+    const char = chars[id];
+    if (!char) return;
+    const dataStr = JSON.stringify(char, null, 2);
+    const blob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    const fileName = (char.displayName || 'character').toLowerCase().replace(/[^a-z0-9_-]/g, '_') + '.json';
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  function importChar(file) {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const char = JSON.parse(e.target.result);
+        if (!char || typeof char !== 'object' || !char.fields) {
+          alert('Invalid character sheet file.');
+          return;
+        }
+        const id = uuid();
+        const chars = getAllChars();
+        chars[id] = {
+          displayName: char.displayName || 'Imported Character',
+          fields: char.fields || {},
+          createdAt: char.createdAt || new Date().toISOString(),
+          lastModified: new Date().toISOString()
+        };
+        saveAllChars(chars);
+        renderCharList();
+        loadChar(id);
+      } catch (err) {
+        alert('Failed to parse character file: ' + err.message);
+      }
+    };
+    reader.readAsText(file);
+  }
+
   function updateTitleName() {
     const nameEl = document.getElementById('name');
     const titleEl = document.getElementById('active-char-name');
@@ -330,6 +375,7 @@
           <span class="char-meta">${escapeHTML(meta)}${modified ? ' · ' + modified : ''}</span>
         </div>
         <div class="char-actions">
+          <button class="char-export-btn" data-action="export" data-id="${id}" title="Export character" aria-label="Export character">↓</button>
           <button class="char-delete-btn" data-action="delete" data-id="${id}" title="Delete character">✕</button>
         </div>
       </li>`;
@@ -398,7 +444,21 @@
       const id = target.dataset.id;
       if (action === 'load') loadChar(id);
       else if (action === 'delete') deleteChar(id);
+      else if (action === 'export') exportChar(id);
     });
+
+    // Import character events
+    const importInput = document.getElementById('char-import-input');
+    const importBtn = document.getElementById('btn-import-char');
+    if (importBtn && importInput) {
+      importBtn.addEventListener('click', () => importInput.click());
+      importInput.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+          importChar(e.target.files[0]);
+          e.target.value = ''; // Reset file input
+        }
+      });
+    }
 
     // Title bar actions
     document.getElementById('btn-save').addEventListener('click', saveActiveChar);
