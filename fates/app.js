@@ -23,6 +23,7 @@
     'aspect1', 'aspect2', 'aspect3', 'tier',
     'refresh', 'xp',
     'consequence-mild', 'consequence-moderate', 'consequence-severe',
+    'consequence-extreme', 'consequence-excruciating',
     'extras', 'stunts',
   ];
 
@@ -89,32 +90,51 @@
 
     const row = (name) => {
       const id = `attr-${name.toLowerCase()}`;
+      const cbId = `unbounded-${name.toLowerCase()}`;
       return `<div class="attr-row">
         <label for="${id}">${name}</label>
         <select id="${id}" data-field="attr:${name}">${opts}</select>
+        <div class="unbounded-slot">
+          <input type="checkbox" id="${cbId}" data-field="unbounded:${name}" />
+          <label for="${cbId}" aria-label="Unbounded ${name}"></label>
+        </div>
       </div>`;
     };
+
+    // Header row for Unbounded column
+    const header = `<div class="attr-row attr-header">
+        <label></label>
+        <div></div>
+        <span class="unbounded-header">Unbounded</span>
+      </div>`;
 
     const left = ATTRIBUTES.filter((_, i) => i % 2 === 0).map(row).join('');
     const right = ATTRIBUTES.filter((_, i) => i % 2 === 1).map(row).join('');
     root.innerHTML = `
-      <div class="attrs-column">${left}</div>
-      <div class="attrs-column">${right}</div>
+      <div class="attrs-column">
+        ${header}
+        ${left}
+      </div>
+      <div class="attrs-column">
+        ${header}
+        ${right}
+      </div>
     `;
   }
 
   // ── Build Stress Boxes ──
   function buildStress(containerId, prefix, trackName) {
     const container = document.getElementById(containerId);
-    container.innerHTML = [1, 2, 3, 4].map(n => {
+    container.innerHTML = [1, 2, 3, 4, 5, 6, 7].map(n => {
       const id = `${prefix}-stress-${n}`;
-      return `<div class="stress-slot">
-        <input type="checkbox" id="${id}" data-field="${prefix}:${n}"
-               aria-label="${trackName} box ${n}" />
-        <label for="${id}">
-          <span class="stress-slot-num">${n}</span>
-        </label>
-      </div>`;
+      return `
+        <div class="stress-slot">
+          <input type="checkbox" id="${id}" data-field="${prefix}:${n}"
+                 aria-label="${trackName} box ${n}" />
+          <label for="${id}">
+            <span class="stress-slot-num">${n}</span>
+          </label>
+        </div>`;
     }).join('');
   }
 
