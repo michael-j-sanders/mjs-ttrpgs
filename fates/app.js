@@ -156,7 +156,7 @@
     document.querySelectorAll('[data-field^="attr:"]').forEach(el => {
       fields[el.dataset.field] = el;
     });
-    document.querySelectorAll('[data-field^="physical:"], [data-field^="mental:"]').forEach(el => {
+    document.querySelectorAll('[data-field^="physical:"], [data-field^="mental:"], [data-field^="unbounded:"]').forEach(el => {
       fields[el.dataset.field] = el;
     });
     return fields;
